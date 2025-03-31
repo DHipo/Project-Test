@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(SDL_Rect _rect, const char* _path)
+Entity::Entity(SDL_FRect _rect, const char* _path)
 {
 	m_rect.x = _rect.x;
 	m_rect.y = _rect.y;

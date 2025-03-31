@@ -8,8 +8,8 @@ class Player;
 #include "Utils.h"
 #include ".\Player\Player.h"
 
-#define DEFAULTSIZE_WIDTH 1280
-#define DEFAULTSIZE_HEIGTH 720
+#define WINDOW_SIZE_W 1280
+#define WINDOW_SIZE_H 720
 #define LEFT_CLICK_MOUSE 1
 #define RIGT_CLICK_MOUSE 1
 

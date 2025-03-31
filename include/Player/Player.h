@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include "..\Entity\Entity.h"
 #include "..\Utils.h"
+#include "..\Global.h"
 
 class Player : public Entity
 {
@@ -13,7 +14,7 @@ private:
 	Utils::MouseInfo m_mouse = { {1,1} ,0 };
 
 public: 
-	Player(SDL_Rect,const char * , int );
+	Player(SDL_FRect,const char * , int );
 	~Player();
 
 	void Update(const Utils::TimeInter&) override;
@@ -22,6 +23,7 @@ public:
   	// This functions can be changed
 	void velocityUpdate(const Utils::TimeInter&);
 	void doAtack();
+	void incrementPosition(int, int);
 
 	// This functions give you access to the data of each elements like mouse and keyboard state
 	void setKeys(std::map<SDL_Keycode, bool>& _keys) { m_keys = &_keys; };

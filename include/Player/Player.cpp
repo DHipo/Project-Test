@@ -1,36 +1,51 @@
 #include "Player.h"
 
-Player::Player(SDL_Rect _rect, const char* _path, int _health)
+Player::Player(SDL_FRect _rect, const char* _path, int _health)
 	: Entity(_rect, _path)
 {
-	
+	m_position = {_rect.x, _rect.y};
 }
 
 void Player::Update (const Utils::TimeInter& _time)
 {
 	velocityUpdate(_time);
+	incrementPosition(m_velocity.x, m_velocity.y);
 	if (m_mouse.button == SDL_BUTTON_LEFT) doAtack();
 }
 
 void Player::Draw(SDL_Renderer* _renderer)
-{	
+{
+	m_rect.x = m_position.x;
+	m_rect.y = m_position.y;
 	SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
 	SDL_RenderFillRectF(_renderer, &m_rect);
 }
 
 void Player::velocityUpdate(const Utils::TimeInter& _time) 
 {
-	m_velocity.y += -1.2 * int(m_velocity.y > 0) + 1.2 * int(m_velocity.y < 0);
-	m_velocity.x += -1.2 * int(m_velocity.x > 0) + 1.2 * int(m_velocity.x < 0);
+	// aceleration when the key is pressed
+	Utils::Vec2 direction = {
+		(-((int)(*this->m_keys)[SDLK_a]) + (int)(*this->m_keys)[SDLK_d]),
+		(-((int)(*this->m_keys)[SDLK_w]) + (int)(*this->m_keys)[SDLK_s])
+	};
 
-	m_velocity.y += m_aceleration.y * 2.5 * -((int)(*this->m_keys)[119])
-		+ m_aceleration.y * 2.5 * (int)(*this->m_keys)[115];
+	// deceleration when the key is not pressed
+	if (direction.x == 0 && m_velocity.x != 0) m_aceleration.x = -1.2f * (m_velocity.x > 0 ? 1 : -1);
+	else m_aceleration.x = 3.7f * direction.x;
 
-	m_velocity.x += m_aceleration.x * 2 * -((int)(*this->m_keys)[97])
-		+ m_aceleration.x * 2 * (int)(*this->m_keys)[100];
-	
-	m_rect.x += (m_velocity.x * _time.deltaTime);
-	m_rect.y += (m_velocity.y * _time.deltaTime);
+	if (direction.y == 0 && m_velocity.y != 0) m_aceleration.y = -1.2f * (m_velocity.y > 0 ? 1 : -1);
+	else m_aceleration.y = 3.7f * direction.y;
+
+	m_velocity.y += _time.deltaTime * m_aceleration.y;
+	m_velocity.x += _time.deltaTime * m_aceleration.x;
+}
+
+void Player::incrementPosition(int _x, int _y) 
+{
+	m_position = {
+		m_position.x + m_velocity.x,
+		m_position.y + m_velocity.y 
+	};
 }
 
 void Player::doAtack() 

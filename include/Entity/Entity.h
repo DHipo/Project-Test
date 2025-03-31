@@ -6,7 +6,7 @@
 class Entity
 {
 public:
-	Entity(SDL_Rect, const char *);
+	Entity(SDL_FRect, const char *);
 	~Entity();
 
 	virtual void Draw(SDL_Renderer*);
@@ -17,6 +17,7 @@ public:
 
 protected:
 	SDL_FRect m_rect;
+	Utils::FVec2 m_position;
 	SDL_Surface * m_image;
 };
 
