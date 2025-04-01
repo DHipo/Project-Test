@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include "..\Entity\Entity.h"
 #include "..\Utils.h"
+#include "..\Game\Game.h"
 #include "..\Global.h"
 
 class Player : public Entity
@@ -23,7 +24,7 @@ public:
   	// This functions can be changed
 	void velocityUpdate(const Utils::TimeInter&);
 	void doAtack();
-	void incrementPosition(int, int);
+	void incrementPosition(float, float);
 
 	// This functions give you access to the data of each elements like mouse and keyboard state
 	void setKeys(std::map<SDL_Keycode, bool>& _keys) { m_keys = &_keys; };

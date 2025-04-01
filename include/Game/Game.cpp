@@ -1,5 +1,7 @@
 #include "Game.h"
 
+SDL_Window* Game::m_window = nullptr;
+
 Game::Game() { std::cout << "Game object created. Now you must initialize it with the init method." << std::endl; }
 Game::~Game() { std::cout << "Game object destruct" << std::endl; }
 
@@ -46,7 +48,7 @@ bool Game::Init(const char *title, int xpos, int ypos, int w, int h, int _FrameR
 		LOG_ERROR("Failed to open font.");
 
 	// Declarations
-	g_player = new Player({50, 50, 100, 100}, "./Assets/Ogro/Sprite_0.png", 1000);
+	g_player = new Player({0.f, 0.f, 50.f, 100.f}, "./Assets/Ogro/Sprite_0.png", 1000);
 
 
 	// All passed

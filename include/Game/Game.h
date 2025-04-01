@@ -14,7 +14,7 @@ private:
 	bool m_running;
 	Uint32 m_flags;
 	float m_framerate;
-	SDL_Window* m_window;
+	static SDL_Window* m_window;
 	SDL_Renderer* m_renderer;
 	SDL_Surface* m_surface;
 	SDL_Event* m_event;
@@ -38,6 +38,6 @@ public:
 	void displayText(const std::string, const Utils::Vec2, const Utils::Vec2);
 
 	inline bool GetRunningState() {return m_running;}
-	inline SDL_Window* GetWindow() {return m_window;}
+	static inline SDL_Window* GetWindow() {return m_window;}
 
 };

@@ -78,4 +78,12 @@ namespace Utils {
 		// I also removed the RenderPresent funcion as it is not needed here
 		return result;
 	}
+
+	inline int absolute(int _value) {
+		return (_value < 0) ? -_value : _value;
+	}
+
+	inline float absolute(float _value) {
+		return (_value < 0) ? -_value : _value;
+	}
 };
