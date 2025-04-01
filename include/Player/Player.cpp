@@ -52,11 +52,11 @@ void Player::incrementPosition(float _x, float _y)
 	SDL_GetWindowSize(Game::GetWindow(), &width, &height);
 	// Check if the player is out of the screen
 	if (m_position.x + _x < 0 || m_position.x + m_rect.w + _x > width) {
-		_x = 0;
+		m_position.x = 0 * (m_position.x + _x < 0) + (width - m_rect.w) * (m_position.x + m_rect.w + _x > width);
 		m_velocity.x = 0; m_aceleration.x = 0;
 	}
 	if (m_position.y + _y < 0 || m_position.y + m_rect.h + _y > height) {
-		_y = 0;
+		m_position.y = 0 * (m_position.y + _y < 0) + (height - m_rect.h) * (m_position.y + m_rect.h + _y > height);
 		m_velocity.y = 0; m_aceleration.y = 0;
 	}
 
