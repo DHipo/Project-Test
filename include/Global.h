@@ -1,9 +1,8 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-class Block;
-class Map;
 class Player;
+class Scene;
 
 #include "Utils.h"
 #include ".\Player\Player.h"

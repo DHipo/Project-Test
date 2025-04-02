@@ -1,6 +1,5 @@
 #include "Game.h"
-
-SDL_Window* Game::m_window = nullptr;
+#include "..\Scene\Scene.h"
 
 Game::Game() { std::cout << "Game object created. Now you must initialize it with the init method." << std::endl; }
 Game::~Game() { std::cout << "Game object destruct" << std::endl; }
@@ -22,13 +21,13 @@ bool Game::Init(const char *title, int xpos, int ypos, int w, int h, int _FrameR
 	}
 
 	std::cout << "Creating renderer..." << std::endl;
-	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED); 
-	if (!m_renderer){
+	renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED); 
+	if (!renderer){
 		status = false;
 		LOG_ERROR("Failed creating renderer...");
 	}
 
-	SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
 	std::cout << "Creating surface..." << std::endl;
 	m_surface = SDL_GetWindowSurface(m_window);
@@ -47,14 +46,10 @@ bool Game::Init(const char *title, int xpos, int ypos, int w, int h, int _FrameR
 	if (!m_font)
 		LOG_ERROR("Failed to open font.");
 
-	// Declarations
-	g_player = new Player({0.f, 0.f, 50.f, 100.f}, "./Assets/Ogro/Sprite_0.png", 1000);
-
-
 	// All passed
 	std::cout << "----------- ALL DONE -----------" << std::endl;
 	m_event = new SDL_Event();
-
+    SDL_GetWindowSize(m_window, &Game::settings->winSize.x, &Game::settings->winSize.y);
 	m_framerate = 1000.0f / _FrameRate;
 	m_running = status;
 	return status;
@@ -72,7 +67,6 @@ void Game::HandleEvents()
 		break;
 	case SDL_KEYDOWN:
 		m_keys[m_event->key.keysym.sym] = true;
-		SDL_Log("%c", m_event->key.keysym.sym);
 		break;
 	case SDL_KEYUP:
 		m_keys[m_event->key.keysym.sym] = false;
@@ -89,9 +83,6 @@ void Game::HandleEvents()
 	default:
 		break;
 	}
-
-	g_player->setMousePosition(m_mouse);
-	g_player->setKeys(m_keys);
 }
 
 /// @brief Display objects on the screen
@@ -99,12 +90,12 @@ void Game::HandleEvents()
 /// @returns nothing
 void Game::Renderer()
 {
-	SDL_RenderClear(m_renderer);
-	// Add stuff to render
-	g_player->Draw(m_renderer);
-	
-	SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 0);
-	SDL_RenderPresent(m_renderer);
+	SDL_RenderClear(renderer);
+
+	if (Game::currentScene != nullptr) Game::currentScene->Render();
+
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	SDL_RenderPresent(renderer);
 }
 
 /// @brief Clear the main objects and quit the program with a output message.
@@ -112,7 +103,7 @@ void Game::Renderer()
 /// @returns nothing
 void Game::Clear()
 {
-	SDL_DestroyRenderer(m_renderer);
+	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(m_window);
 	TTF_CloseFont(m_font);
 	TTF_Quit();
@@ -125,7 +116,11 @@ void Game::Clear()
 /// @returns nothing
 void Game::Update()
 {
-	g_player->Update(m_time);
+	if (Game::currentScene == nullptr) {
+		SDL_Log("No scene loaded, cannot update.");
+		return; // No scene loaded
+	}
+	Game::currentScene->Update();
 }
 
 ///	Main while of the game
@@ -162,13 +157,13 @@ void Game::Run()
 	this->Clear();
 }
 
-void Game::displayText(const std::string _text, const Utils::Vec2 _position, const Utils::Vec2 _size)
+void Game::displayText(const std::string _text, const SDL_Rect _dest, const SDL_Color _color = {0,0,0, 255})
 {
-	SDL_Surface *text = TTF_RenderText_Solid(m_font, _text.c_str(), {0, 0, 0, 255});
+	SDL_Surface *text = TTF_RenderText_Solid(m_font, _text.c_str(), _color);
 	if (!text)
 		return;
 
-	SDL_Texture *text_texture = SDL_CreateTextureFromSurface(m_renderer, text);
+	SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text);
 
-	SDL_RenderCopy(m_renderer, text_texture, NULL, new SDL_Rect{_position.x, _position.y, (int)_text.size() * FONT_SIZE, _size.y});
+	SDL_RenderCopy(renderer, text_texture, NULL,  &_dest);
 }

@@ -7,22 +7,15 @@
 #include "..\Entity\Entity.h"
 #include "..\Global.h"
 
+struct Settings {
+	Utils::Vec2 winSize = {WINDOW_SIZE_W, WINDOW_SIZE_H};
+	int maxFPS = 60;
+	
+	int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
+};
+
 class Game
 {
-private:
-	Utils::Vec2 m_windowSize;
-	bool m_running;
-	Uint32 m_flags;
-	float m_framerate;
-	static SDL_Window* m_window;
-	SDL_Renderer* m_renderer;
-	SDL_Surface* m_surface;
-	SDL_Event* m_event;
-	TTF_Font* m_font;
-	std::map<SDL_Keycode, bool> m_keys;
-	Utils::TimeInter m_time = { 0,0,0,	0,0,0,	0};
-	Utils::MouseInfo m_mouse = { 0,0, 0, 0 };
-
 public:
 	Game();
 	~Game();
@@ -35,9 +28,29 @@ public:
 	void Clear();
 	void Renderer();
 
-	void displayText(const std::string, const Utils::Vec2, const Utils::Vec2);
-
+	
+	static void displayText(const std::string _text, const SDL_Rect _dest, const SDL_Color _color);
+	
+	void changeScene(Scene& scene) { currentScene = &scene; }
+	void clearScene() { currentScene = nullptr; }
 	inline bool GetRunningState() {return m_running;}
 	static inline SDL_Window* GetWindow() {return m_window;}
 
+	static Settings* settings;
+	static SDL_Renderer* renderer;
+private:
+	bool m_running;
+	Uint32 m_flags;
+	float m_framerate;
+
+	SDL_Surface* m_surface;
+	static TTF_Font* m_font;
+	
+	// deberian ser estaticos para poder tener un acceso libre a ellos desde cualquier parte del programa
+	static SDL_Window* m_window;
+	static SDL_Event* m_event;
+	static Utils::MouseInfo m_mouse;
+	static std::map<SDL_Keycode, bool> m_keys;
+	static Utils::TimeInter m_time;
+	static Scene* currentScene;
 };
